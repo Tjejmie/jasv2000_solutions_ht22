@@ -13,7 +13,7 @@ for those functions which are needed:
 import argparse
 import sys
 
-__version__ = '1.0'
+__version__ = '1.1'
 __desc__ = "A simple script used to authenticate spies!"
 
 
@@ -21,8 +21,8 @@ def authenticate_user(credentials: str) -> bool:
     """Procedure for validating user credentials"""
     agents = {  # Expected credentials. MAY NOT BE MODIFIED!!
         'Chevy_Chase': 'i0J0u0j0u0J0Zys0r0{',   # cipher: bAnanASplit
-        'Dan_Aykroyd': 'i0N00h00^0{b',          # cipher: bEaUtY
-        'John_Belushi': 'j0J0sc0v0w0L0',        # cipher: cAlZonE
+        'Dan_Aykroyd': 'i0N00h00~0[$',          # cipher: bEauTy
+        'John_Belushi': 'J0j0S%0V0w0L0',        # cipher: CaLzOnE
     }
     user_tmp = pass_tmp = str()
 
