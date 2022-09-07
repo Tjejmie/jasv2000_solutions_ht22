@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#test to see if branch worked
+
 """ DT179G - LAB ASSIGNMENT 1
 The code assignment consists of two parts, and you need to implement a solution for each one based
 on the pseudo code presented!
@@ -19,7 +19,8 @@ Expected output:
     -5 + 8 + 7.6 = 10
 '''
 
-# TODO: implement your solution for pseudo code!
+TOTAL = A+int(B)+int(C)  # Casting B+C to int
+
 
 print("{} + {} + {} = {}".format(A, B, C, TOTAL))  # DO NOT MODIFY
 
@@ -37,6 +38,9 @@ Expected output:
     Value of 'TOTAL' exists in string: true that
 '''
 
-# TODO: implement your solution for pseudo code!
+if TEXT.__contains__(str(TOTAL)):  # Check if TEXT contains TOTAL. Casting TOTAL to string
+    OUTPUT = "true that"
+else:
+    OUTPUT = "nope"
 
 print("Value of 'TOTAL' exists in string: {}".format(OUTPUT))  # DO NOT MODIFY
