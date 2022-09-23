@@ -37,10 +37,7 @@ IF True STORE "true that" in variable 'OUTPUT' ELSE STORE "nope".
 Expected output:
     Value of 'TOTAL' exists in string: true that
 '''
+OUTPUT = 'true that' if str(TOTAL) in TEXT else 'nope'  # Check if TEXT contains TOTAL. Casting TOTAL to string
 
-if TEXT.__contains__(str(TOTAL)):  # Check if TEXT contains TOTAL. Casting TOTAL to string
-    OUTPUT = "true that"
-else:
-    OUTPUT = "nope"
 
 print("Value of 'TOTAL' exists in string: {}".format(OUTPUT))  # DO NOT MODIFY
