@@ -9,28 +9,34 @@ hämta och ladda upp filer, där Bitbucket är den versionshanteringsprogram som
 
 ## Syfte
 
-Syftet med labration 1 var främst att bekanta sig med git men även att lösa två uppgifter. 
-Den ena uppgiften handlade om att använda `casting` för att summera tal med varandra en variabel, 
-där alla tal skulle ha variabeln `int`. Den andra uppgiften handlade om att ta en textsträng och 
-se om den innehöll resultatet av uppgift 1. Beroende på om detta var sant eller falsk så skulle 
-en specifik textsträng retuneras.
+Syftet med labration 1 var främst att bekanta sig med git, versionshantering, Bitbucket, datatyper, 
+operationer och villkor. Detta gjordes främst genom att lösa två uppgifter.
 
 
 ## Genomförande
 
+Den första uppgiften handlade om att summera tre olika variabler med varandra, där resultatet skulle
+presenteras med variablen `int`. `Casting` användes för att ändra två av dessa tre tal till variabeln
+int för att adderingen skulle vara möjlig. Efter siffrorna blev castade adderades dessa tal med
+varandra och presenterades.
 
-Kodningen som är gjord kan användas för andra liknande fall, där exempelvis IF-satsen som skapades
-kan ändras och användas med andra villkor. Uppgift1 kan man ändra den matimatiska ekvationen för 
-att exempelvis ta talen minus varandra istället för plus. Under uppgiftens gång stötte jag inte 
-på några problem. Detta är dock inte så konstigt i och med att uppgiften var relativt liten och 
-fokuset låg på att få git att fungera mer än att koda.
+Den andra uppgiften handlade om att ta en textsträng och ta reda på om den innehöll resultatet av 
+uppgift 1. Då uppgift 1 returnerade en int behövde `Casting` användas för att ändra den till en string.
+För att kontrollera om textsträngen innehöll resultatet av uppgift 1 användes den inbyggda metoden
+`__contains__` i en ternär operator. Beroende på om detta var sant eller falsk så skulle en specifik 
+textsträng retuneras. Att detta fungerade testades genom att jag skapade temporära variabler som jag
+visste skulle returnera false, bara för att försäkra mig om att den ternära operatorn 
+fungerade korrekt.
 
 
 ## Diskussion
 
-Syftet med uppgiften är uppfyllt. Det var inga större problem med att få git att fungera eller att 
-lösa uppgiftena. Det finns garanterat flera alternativ för att lösa de två uppgifterna som denna 
-labb innehöll men jag anser att lösningen som skapdes är tillförlitlig.
+Syftet med labration 1 var främst att bekanta sig med git, versionshantering samt Pythons datatyper, 
+operationer och villkor. Syftet med denna uppgift kan därför anses vara uppfyllt i och med att git 
+användes både för att hämta labration 1 samt för att ladda upp den efter uppgiften var slutförd.
+Datatyper, operationer och villkor användes för att lösa de två uppgifter som labration 1 bestod av.
+Det finns flera alternativ för att lösa de två uppgifterna som denna labration innehöll men jag anser 
+att lösningen som skapdes är tillförlitlig och gjorde att bekantskap med Pythons kodstruktur skapades.
 
 Jag lärde mig att hantera git från ett annat IDE än vad jag är van vid då denna labb utfördes i
 PyCharm. Det fungerar likande jämfört med andra IDE's jag använt mig av tidigare. Kodmässigt
