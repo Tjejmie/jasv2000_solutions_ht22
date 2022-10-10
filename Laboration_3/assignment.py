@@ -11,20 +11,15 @@ for those functions which are needed:
  - print_statistics(..)
  - write_to_file(..)
 """
-import shutil
+
 from pathlib import Path
-from timeit import default_timer as timer
 from functools import wraps
 import argparse
 import logging
 import logging.config
 import json
-import traceback
-import sys
 import timeit
 import itertools
-import operator
-import os
 
 __version__ = '1.1'
 __desc__ = "Program used for measuríng execution time of various Fibonacci implementations!"
@@ -35,7 +30,6 @@ RESOURCES = Path(__file__).parent / "../_Resources/"
 def create_logger() -> logging.Logger:
     """Create and return logger object."""
     print("entering function create_logger")
-    pass  # TODO: Replace with implementation!
 
 
 
@@ -61,7 +55,7 @@ def measurements_decorator(func):
         logger = logging.getLogger('ass_3_logger')
         logger.info('Starting measurements...')
         start = timeit.default_timer()
-        for i in reversed(range(nth_nmb - -1)):  # -1 so it start at nth_nmb and not nth_nmb -1
+        for i in reversed(range(nth_nmb +1)):  # +1 so it start at nth_nmb and not nth_nmb -1
             result = func(i)
             container.append(result)
             if i % 5 == 0:
@@ -103,12 +97,19 @@ def fibonacci_recursive(nth_nmb: int) -> int:
     return fib(nth_nmb)
 
 
-#@measurements_decorator
-#def fibonacci_memory(nth_nmb: int) -> int:
-#    """An recursive approach to find Fibonacci sequence value, storing those already calculated."""
-#    print("entering function fibonacci_memory")
-#    pass  # TODO: Replace with implementation!
-#    print("exiting function fibonacci_memory")
+@measurements_decorator
+def fibonacci_memory(nth_nmb: int) -> int:
+    """An recursive approach to find Fibonacci sequence value, storing those already calculated."""
+
+    memory = {0: 0, 1: 1}
+    def fib(_n):
+        if _n in memory:
+            return memory[_n]
+        memory[_n] = fib(_n - 1) + fib(_n - 2)
+        return memory[_n]
+    return fib(nth_nmb)
+
+
 
 
 def duration_format(duration: float, precision: str) -> str:
@@ -180,7 +181,7 @@ def main():
     fib_details = {  # store measurement information in a dictionary
         'fib iteration': fibonacci_iterative(nth_value),
         'fib recursion': fibonacci_recursive(nth_value),
-        #'fib memory': fibonacci_memory(nth_value)
+        'fib memory': fibonacci_memory(nth_value)
     }
 
     print_statistics(fib_details, nth_value)    # print information in console
