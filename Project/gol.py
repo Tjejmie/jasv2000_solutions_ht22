@@ -66,8 +66,24 @@ def simulation_decorator(func):
 
 def parse_world_size_arg(_arg: str) -> tuple:
     """ Parse width and height from command argument. """
-    pass
 
+    values = list(filter(None, _arg.split('x')))   # Split string and add items to list. Filter none
+
+    try:
+        values = [int(num) for num in values]   # Convert value in list to int
+        if len(values) != 2:   # Check if list has two items
+            raise AssertionError("World size should contain width and height, seperated by 'x'. Ex: '80x40'")
+
+        for num in values:
+            if num <= 0:   # Check that list contain positive number above zero
+                raise ValueError("Both width and height needs to have positive values above zero.")
+
+    except (ValueError, AssertionError) as myError:
+            print(myError)   # Print error
+            values = [80, 40]   # set default value
+            print("Using default world size: 80x40")
+
+    return tuple(values)
 
 def populate_world(_world_size: tuple, _seed_pattern: str = None) -> dict:
     """ Populate the world with cells and initial states. """
