@@ -32,7 +32,7 @@ import itertools
 from pathlib import Path
 from ast import literal_eval
 from time import sleep
-
+from itertools import product
 import Project.code_base as cb
 
 __version__ = '1.0'
@@ -87,14 +87,48 @@ def parse_world_size_arg(_arg: str) -> tuple:
 
 def populate_world(_world_size: tuple, _seed_pattern: str = None) -> dict:
     """ Populate the world with cells and initial states. """
-    pass
 
+    int1, int2 = _world_size
+    height = list(range(0, int1))
+    width = list(range(0, int2))
+    coordinates = (tuple(product(height, width)))
+
+    population = {}
+
+    for cell in coordinates:
+        if 0 in cell or cell[0] == 79 or cell[1] == int2-1:   # Get all values that's on the "edge"
+            population[cell] = None
+            continue
+
+        if _seed_pattern != None:
+            gliderList = cb.get_pattern('gliders', _world_size)
+            for x in gliderList:
+                if x in coordinates:
+                    population[cell] = {}
+                    population[cell]['state'] = cb.STATE_ALIVE
+        else:
+            random_number = random.randint(0, 20)
+            population[cell] = {}
+            if random_number > 16:
+                population[cell]['state'] = cb.STATE_ALIVE
+            else:
+                population[cell]['state'] = cb.STATE_DEAD
+        neighbours = calc_neighbour_positions(cell)
+        population[cell]['neighbours'] = neighbours
+
+    return population
 
 def calc_neighbour_positions(_cell_coord: tuple) -> list:
     """ Calculate neighbouring cell coordinates in all directions (cardinal + diagonal).
     Returns list of tuples. """
-    pass
 
+    coords = [(-1, -1), (0, -1), (1, -1), (-1, 0),
+               (1, 0), (-1, 1), (0, 1), (1, 1)]
+
+    x, y = _cell_coord
+
+    neighbours = {(x + x_add, y + y_add) for x_add, y_add in coords}
+    return list(neighbours)
 
 def run_simulation(_generations: int, _population: dict, _world_size: tuple):
     """ Runs simulation for specified amount of generations. """
@@ -119,7 +153,7 @@ def main():
                         help='Amount of generations the simulation should run. Defaults to 50.')
     parser.add_argument('-s', '--seed', dest='seed', type=str,
                         help='Starting seed. If omitted, a randomized seed will be used.')
-    parser.add_argument('-ws', '--worldsize', dest='worldsize', type=str, default='80x40',
+    parser.add_argument('-ws', '--worldsize', dest='worldsize', type=str, default='10x5',
                         help='Size of the world, in terms of width and height. Defaults to 80x40.')
     parser.add_argument('-f', '--file', dest='file', type=str,
                         help='Load starting seed from file.')
