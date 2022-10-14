@@ -22,7 +22,7 @@ import timeit
 import itertools
 
 __version__ = '1.1'
-__desc__ = "Program used for measurÃ­ng execution time of various Fibonacci implementations!"
+__desc__ = "Program used for measuríng execution time of various Fibonacci implementations!"
 
 RESOURCES = Path(__file__).parent / "../_Resources/"
 
@@ -135,10 +135,9 @@ def write_to_file(fib_details: dict):
     for key, val in fib_details.items():   # Get data from fib_details and declare it as key and val
         file_path = RESOURCES / (key.replace(' ', '_') + '.txt')   # Modify name for textfiles
         f = open(f"{file_path}", "w+")   # Create new textfiles
-        newValue = reversed(val[1])   # Get values from fib_details and reverse list
-        seqAndValue = tuple(zip(itertools.count(), newValue))   # Add sequence to tuple of values
-        result = reversed(seqAndValue)  # Reverse tuple of sequence and value
-        for data in result:   # Get each item in tuple
+        new_value = val[1]  # Get values from fib_details and reverse list
+        seq_and_value = tuple(zip(itertools.count(30, -1), new_value))   # Add sequence to tuple of values
+        for data in seq_and_value:   # Get each item in tuple
             f.write("%s: %s \n" % data)   # Write item in file
 
 
