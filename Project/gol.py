@@ -96,16 +96,17 @@ def populate_world(_world_size: tuple, _seed_pattern: str = None) -> dict:
     population = {}
 
     for cell in coordinates:
-        if 0 in cell or cell[0] == 79 or cell[1] == int2-1:   # Get all values that's on the "edge"
+        if 0 in cell or cell[0] == int1-1 or cell[1] == int2-1:   # Get all values that's on the "edge"
             population[cell] = None
             continue
 
-        if _seed_pattern != None:
+        if _seed_pattern != None:    # Fixa att den går igenom loopen innan den går till neighbour
             gliderList = cb.get_pattern('gliders', _world_size)
             for x in gliderList:
                 if x in coordinates:
                     population[cell] = {}
                     population[cell]['state'] = cb.STATE_ALIVE
+
         else:
             random_number = random.randint(0, 20)
             population[cell] = {}
@@ -113,6 +114,9 @@ def populate_world(_world_size: tuple, _seed_pattern: str = None) -> dict:
                 population[cell]['state'] = cb.STATE_ALIVE
             else:
                 population[cell]['state'] = cb.STATE_DEAD
+
+
+
         neighbours = calc_neighbour_positions(cell)
         population[cell]['neighbours'] = neighbours
 
@@ -132,17 +136,49 @@ def calc_neighbour_positions(_cell_coord: tuple) -> list:
 
 def run_simulation(_generations: int, _population: dict, _world_size: tuple):
     """ Runs simulation for specified amount of generations. """
-    pass
+    #for i in range(_generations):
+        #cb.clear_console()
+    update_world(_population, _world_size)
+
+
+        #sleep(0.200)
 
 
 def update_world(_cur_gen: dict, _world_size: tuple) -> dict:
     """ Represents a tick in the simulation. """
-    pass
+    int1, int2 = _world_size
+    nextGen = {}
+
+    for cell in _cur_gen:
+        if _cur_gen[cell] == None:
+            _cur_gen[cell] = {}
+            _cur_gen[cell]['state'] = cb.STATE_RIM
+
+        res = list(_cur_gen[cell].values())[0]
+        color = cb.get_print_value(res)
+
+        if cell[1] == int2-1:
+            cb.progress(f"{color}\n")
+        else:
+            cb.progress(f"{color}")
+
+
+    value = '#'
+    for cell in _cur_gen:
+        if value not in _cur_gen[cell].values():
+            neighbours = calc_neighbour_positions(cell)
+            count = count_alive_neighbours(neighbours ,_cur_gen)
+
 
 
 def count_alive_neighbours(_neighbours: list, _cells: dict) -> int:
     """ Determine how many of the neighbouring cells are currently alive. """
-    pass
+
+    count = 0
+    for i in _neighbours:
+        if _cells[i]['state'] == 'X':
+            count +=1
+    return count
 
 
 def main():
@@ -153,7 +189,7 @@ def main():
                         help='Amount of generations the simulation should run. Defaults to 50.')
     parser.add_argument('-s', '--seed', dest='seed', type=str,
                         help='Starting seed. If omitted, a randomized seed will be used.')
-    parser.add_argument('-ws', '--worldsize', dest='worldsize', type=str, default='10x5',
+    parser.add_argument('-ws', '--worldsize', dest='worldsize', type=str, default='10x20',
                         help='Size of the world, in terms of width and height. Defaults to 80x40.')
     parser.add_argument('-f', '--file', dest='file', type=str,
                         help='Load starting seed from file.')
