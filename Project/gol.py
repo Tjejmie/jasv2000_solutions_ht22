@@ -137,12 +137,16 @@ def calc_neighbour_positions(_cell_coord: tuple) -> list:
     neighbours = {(x + x_add, y + y_add) for x_add, y_add in coords}
     return list(neighbours)
 
-def run_simulation(_generations: int, _population: dict, _world_size: tuple):
+def run_simulation(_nth_generation: int, _population: dict, _world_size: tuple):
     """ Runs simulation for specified amount of generations. """
-    for i in range(_generations):
-        cb.clear_console()
-        _population = update_world(_population, _world_size)
-        sleep(0.200)
+
+
+    cb.clear_console()
+    _population = update_world(_population, _world_size)
+    sleep(0.200)
+
+    _nth_generation if _nth_generation <= 1 else run_simulation(_nth_generation - 1, _population, _world_size)
+
 
 
 def update_world(_cur_gen: dict, _world_size: tuple) -> dict:
@@ -202,7 +206,7 @@ def main():
                         help='Amount of generations the simulation should run. Defaults to 50.')
     parser.add_argument('-s', '--seed', dest='seed', type=str,
                         help='Starting seed. If omitted, a randomized seed will be used.')
-    parser.add_argument('-ws', '--worldsize', dest='worldsize', type=str, default='5x10',
+    parser.add_argument('-ws', '--worldsize', dest='worldsize', type=str, default='10x30',
                         help='Size of the world, in terms of width and height. Defaults to 80x40.')
     parser.add_argument('-f', '--file', dest='file', type=str,
                         help='Load starting seed from file.')
