@@ -104,20 +104,23 @@ def populate_world(_world_size: tuple, _seed_pattern: str = None) -> dict:
             gliderList = cb.get_pattern('gliders', _world_size)
             for x in gliderList:
                 if x in coordinates:
-                    population[cell] = {}
-                    population[cell]['state'] = cb.STATE_ALIVE
+                    #population[cell] = {}
+                    population[cell] = {'state': cb.STATE_ALIVE}
+                    #population[cell]['state'] = cb.STATE_ALIVE
 
         else:
             random_number = random.randint(0, 20)
-            population[cell] = {}
+            #population[cell] = {}
             if random_number > 16:
-                population[cell]['state'] = cb.STATE_ALIVE
+                population[cell] = {'state': cb.STATE_ALIVE}
+                #population[cell]['state'] = cb.STATE_ALIVE
             else:
-                population[cell]['state'] = cb.STATE_DEAD
+                population[cell] = {'state': cb.STATE_DEAD}
 
 
 
         neighbours = calc_neighbour_positions(cell)
+
         population[cell]['neighbours'] = neighbours
 
     return population
@@ -136,12 +139,10 @@ def calc_neighbour_positions(_cell_coord: tuple) -> list:
 
 def run_simulation(_generations: int, _population: dict, _world_size: tuple):
     """ Runs simulation for specified amount of generations. """
-    #for i in range(_generations):
-        #cb.clear_console()
-    update_world(_population, _world_size)
-
-
-        #sleep(0.200)
+    for i in range(_generations):
+        cb.clear_console()
+        _population = update_world(_population, _world_size)
+        sleep(0.200)
 
 
 def update_world(_cur_gen: dict, _world_size: tuple) -> dict:
@@ -163,11 +164,23 @@ def update_world(_cur_gen: dict, _world_size: tuple) -> dict:
             cb.progress(f"{color}")
 
 
-    value = '#'
     for cell in _cur_gen:
-        if value not in _cur_gen[cell].values():
+        if '#' not in _cur_gen[cell].values():
             neighbours = calc_neighbour_positions(cell)
             count = count_alive_neighbours(neighbours ,_cur_gen)
+            if _cur_gen[cell]['state'] == 'X' and count == 2 or count == 3:
+
+                nextGen[cell] = {'state': 'X'}
+            if _cur_gen[cell]['state'] == '-' and count == 3:
+                nextGen[cell] = {'state': 'X'}
+            else:
+                nextGen[cell] = {'state': '-'}
+        if _cur_gen[cell]['state'] == '#':
+            nextGen[cell] = {}
+            nextGen[cell]['state'] = cb.STATE_RIM
+
+
+    return nextGen
 
 
 
@@ -185,11 +198,11 @@ def main():
     """ The main program execution. YOU MAY NOT MODIFY ANYTHING IN THIS FUNCTION!! """
     epilog = "DT179G Project v" + __version__
     parser = argparse.ArgumentParser(description=__desc__, epilog=epilog, add_help=True)
-    parser.add_argument('-g', '--generations', dest='generations', type=int, default=50,
+    parser.add_argument('-g', '--generations', dest='generations', type=int, default=2,
                         help='Amount of generations the simulation should run. Defaults to 50.')
     parser.add_argument('-s', '--seed', dest='seed', type=str,
                         help='Starting seed. If omitted, a randomized seed will be used.')
-    parser.add_argument('-ws', '--worldsize', dest='worldsize', type=str, default='10x20',
+    parser.add_argument('-ws', '--worldsize', dest='worldsize', type=str, default='5x10',
                         help='Size of the world, in terms of width and height. Defaults to 80x40.')
     parser.add_argument('-f', '--file', dest='file', type=str,
                         help='Load starting seed from file.')
