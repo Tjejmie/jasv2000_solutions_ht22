@@ -93,6 +93,8 @@ def populate_world(_world_size: tuple, _seed_pattern: str = None) -> dict:
     width = list(range(0, int2))
     coordinates = (tuple(product(height, width)))
 
+    pattern = cb.get_pattern(_seed_pattern, (int2, int1))
+
     population = {}
 
     for cell in coordinates:
@@ -100,13 +102,14 @@ def populate_world(_world_size: tuple, _seed_pattern: str = None) -> dict:
             population[cell] = None
             continue
 
-        if _seed_pattern != None:    # Fixa att den går igenom loopen innan den går till neighbour
-            gliderList = cb.get_pattern('gliders', _world_size)
-            for x in gliderList:
-                if x in coordinates:
-                    #population[cell] = {}
-                    population[cell] = {'state': cb.STATE_ALIVE}
-                    #population[cell]['state'] = cb.STATE_ALIVE
+        if _seed_pattern is not None:    # Fixa att den går igenom loopen innan den går till neighbour
+
+            if cell in pattern:
+                population[cell] = {'state': cb.STATE_ALIVE}
+
+            else:
+                population[cell] = {'state': cb.STATE_DEAD}
+
 
         else:
             random_number = random.randint(0, 20)
@@ -142,10 +145,14 @@ def run_simulation(_nth_generation: int, _population: dict, _world_size: tuple):
 
 
     cb.clear_console()
-    _population = update_world(_population, _world_size)
-    sleep(0.200)
 
-    _nth_generation if _nth_generation <= 1 else run_simulation(_nth_generation - 1, _population, _world_size)
+    _population = update_world(_population, _world_size)
+    sleep(0.100)
+
+    True if _nth_generation <= 1 else run_simulation(_nth_generation - 1, _population, _world_size)
+    #   Runs simulation if needed
+
+
 
 
 
@@ -155,7 +162,7 @@ def update_world(_cur_gen: dict, _world_size: tuple) -> dict:
     nextGen = {}
 
     for cell in _cur_gen:
-        if _cur_gen[cell] == None:
+        if _cur_gen[cell] is None:
             _cur_gen[cell] = {}
             _cur_gen[cell]['state'] = cb.STATE_RIM
 
@@ -175,7 +182,7 @@ def update_world(_cur_gen: dict, _world_size: tuple) -> dict:
             if _cur_gen[cell]['state'] == 'X' and count == 2 or count == 3:
 
                 nextGen[cell] = {'state': 'X'}
-            if _cur_gen[cell]['state'] == '-' and count == 3:
+            elif _cur_gen[cell]['state'] == '-' and count == 3:
                 nextGen[cell] = {'state': 'X'}
             else:
                 nextGen[cell] = {'state': '-'}
@@ -206,7 +213,7 @@ def main():
                         help='Amount of generations the simulation should run. Defaults to 50.')
     parser.add_argument('-s', '--seed', dest='seed', type=str,
                         help='Starting seed. If omitted, a randomized seed will be used.')
-    parser.add_argument('-ws', '--worldsize', dest='worldsize', type=str, default='10x30',
+    parser.add_argument('-ws', '--worldsize', dest='worldsize', type=str, default='10x20',
                         help='Size of the world, in terms of width and height. Defaults to 80x40.')
     parser.add_argument('-f', '--file', dest='file', type=str,
                         help='Load starting seed from file.')
