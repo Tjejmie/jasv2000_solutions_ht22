@@ -78,7 +78,7 @@ def decrypt_password(password: str) -> str:
         else:  # Check if traversal has an even value
             tmp = ord(char) + rot7   # +7 steps within the ASCII table
         new_val = chr((tmp - 126) + 32) if tmp > 126 else chr(tmp)
-        if char in vowels:
+        if char in vowels:  # Check if char is vowel and set value
             decrypted += f"0{new_val}0"
         else:
             decrypted += new_val
