@@ -47,7 +47,27 @@ RESOURCES = Path(__file__).parent / "../_Resources/"
 
 def load_seed_from_file(_file_name: str) -> tuple:
     """ Load population seed from file. Returns tuple: population (dict) and world_size (tuple). """
-    pass
+    import pathlib
+    import ast
+
+
+    if ".json" not in _file_name:
+        _file_name = f"{_file_name}.json"
+
+    file_path = pathlib.Path(RESOURCES / _file_name)
+    population = {}
+    with open(file_path, 'r') as file:
+
+        data = json.load(file)
+
+        for element in data.values():
+            if isinstance(element, dict):
+                for key, value in element.items():
+                    population.setdefault(ast.literal_eval(key), value)
+            if isinstance(element, list):
+                worlSize = tuple(element)
+    returnTuple = (dict(population), worlSize)
+    return tuple(returnTuple)
 
 
 def create_logger() -> logging.Logger:
@@ -147,7 +167,7 @@ def run_simulation(_nth_generation: int, _population: dict, _world_size: tuple):
     cb.clear_console()
 
     _population = update_world(_population, _world_size)
-    sleep(0.100)
+    sleep(0.200)
 
     True if _nth_generation <= 1 else run_simulation(_nth_generation - 1, _population, _world_size)
     #   Runs simulation if needed
@@ -215,7 +235,7 @@ def main():
                         help='Starting seed. If omitted, a randomized seed will be used.')
     parser.add_argument('-ws', '--worldsize', dest='worldsize', type=str, default='10x20',
                         help='Size of the world, in terms of width and height. Defaults to 80x40.')
-    parser.add_argument('-f', '--file', dest='file', type=str,
+    parser.add_argument('-f', '--file', dest='file', type=str, default='seed_gliders.json',
                         help='Load starting seed from file.')
 
     args = parser.parse_args()
