@@ -37,6 +37,7 @@ def create_logger() -> logging.Logger:
     logger = logging.getLogger('ass_3_logger')   # Creating object of the logging
     return logger
 
+
 def measurements_decorator(func):
     """Function decorator, used for time measurements."""
     @wraps(func)
@@ -53,7 +54,6 @@ def measurements_decorator(func):
 
         duration = timeit.default_timer() - start   # Get duration
         return duration, tuple(value)   # Return duration and container as tuple
-
     return wrapper
 
 
@@ -67,7 +67,6 @@ def fibonacci_iterative(nth_nmb: int) -> int:
         return nth_nmb
     for __ in range(nth_nmb - 1):
         old, new = new, old + new
-
     return new
 
 
@@ -78,8 +77,8 @@ def fibonacci_recursive(nth_nmb: int) -> int:
 
     def fib(_n):
         return _n if _n <= 1 else fib(_n - 1) + fib(_n - 2)
-
     return fib(nth_nmb)
+
 
 @measurements_decorator
 def fibonacci_memory(nth_nmb: int) -> int:
@@ -92,7 +91,6 @@ def fibonacci_memory(nth_nmb: int) -> int:
             return memory[_n]
         return memory[_n]   # Return value in dict
     return fib(nth_nmb)
-
 
 
 def duration_format(duration: float, precision: str) -> str:
@@ -118,7 +116,6 @@ def print_statistics(fib_details: dict, nth_value: int):
 
     print(line)
     print(f"DURATION FOR EACH APPROACH WITHIN INTERVAL: {nth_value}-0".center(75)+f"{line}")   # Print line and header
-
     values = ['Seconds', 'Milliseconds', 'Microseconds', 'Nanoseconds']
     print(f"{values[0].rjust(27)}{values[1].rjust(16)}{values[2].rjust(16)}{values[3].rjust(16)}")   # Print column headers
     for key, val in fib_details.items():   # Get data from fib_details and declare it as key and val
@@ -128,6 +125,7 @@ def print_statistics(fib_details: dict, nth_value: int):
         microsec = duration_format(duration, values[2])   # Get microseconds from duration_format
         nanosec = duration_format(duration, values[3])   # Get nanoseconds from duration_format
         print(f"{key.title().ljust(20)}{sec.rjust(0)}{millisec.rjust(16)}{microsec.rjust(16)}{nanosec.rjust(16)}")
+
 
 def write_to_file(fib_details: dict):
     """Function to write information to file."""
