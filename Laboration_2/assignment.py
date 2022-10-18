@@ -37,14 +37,9 @@ def authenticate_user(credentials: str) -> bool:
 
     pass_tmp = credentials.rsplit(" ")[-1]  # Get last item from string
     user_tmp = credentials.split(" ")[0:2]  # Get first two items from string
-
     user_tmp = format_username(user_tmp)  # Call format_username method and get the new username
     pass_tmp = decrypt_password(pass_tmp)  # Call decrypt_password method and get the new decrypted password
-
-    for key, val in agents.items():  # Loop that checks every key and value in agents dict
-        if key == user_tmp:  # Check if key from dict match user_tmp
-            if val == pass_tmp:  # Check if value connected with the key above match pass_tmp
-                return True
+    return agents.get(user_tmp) == pass_tmp   # Return true if username match password
 
 
 def format_username(username: list) -> str:
@@ -56,12 +51,9 @@ def format_username(username: list) -> str:
     REPLACE empty space between given name and surname with UNDERSCORE '_'
     RETURN formatted username as string value.
     '''
-    for i in range(len(username)):  # Loops through the name
-        username[i] = username[i].title()  # First letter for the first- and last name gets capitalized, the rest small
+    # Join names and capitalize first letter in first- & lastname
+    return '_'.join(username).title()
 
-    username = '_'.join(map(str, username))  # The name changes to string and puts an underscore between the names
-
-    return username
 
 def decrypt_password(password: str) -> str:
     """Procedure used to decrypt user provided password"""
@@ -79,27 +71,17 @@ def decrypt_password(password: str) -> str:
     
     RETURN decrypted string value
     '''
-
-    for i, char in enumerate(password):  # Counter for the current iteration (traversal) and loop for each char in password
-        if char in vowels:  # Check if char in password is vowel
-            if i % 2 != 0:  # Check if traversal has an odd value
-                tmp = ord(char) + rot9  # Char gets +9 steps within the ASCII table
-                new_val = chr((tmp - 126) + 32) if tmp > 126 else chr(tmp)  # Char gets new value from ASCII
-                decrypted += f"0{new_val}0"  # Decrypted value adds the new char that's both preceded and succeeded by 0
-            elif i % 2 == 0:  # Check if traversal has an even value
-                tmp = ord(char) + rot7  # Char gets +7 steps within the ASCII table
-                new_val = chr((tmp - 126) + 32) if tmp > 126 else chr(tmp)
-                decrypted += f"0{new_val}0"
+    # Counter for the current iteration and loop for each char in password
+    for i, char in enumerate(password):
+        if i % 2 != 0:  # Check if traversal has an odd value
+            tmp = ord(char) + rot9  # +9 steps within the ASCII table
+        else:  # Check if traversal has an even value
+            tmp = ord(char) + rot7   # +7 steps within the ASCII table
+        new_val = chr((tmp - 126) + 32) if tmp > 126 else chr(tmp)
+        if char in vowels:
+            decrypted += f"0{new_val}0"
         else:
-            if i % 2 != 0:
-                tmp = ord(char) + rot9
-                new_val = chr((tmp - 126) + 32) if tmp > 126 else chr(tmp)
-                decrypted += new_val  # Decrypted value adds the new char
-            elif i % 2 == 0:
-                tmp = ord(char) + rot7
-                new_val = chr((tmp - 126) + 32) if tmp > 126 else chr(tmp)
-                decrypted += new_val
-
+            decrypted += new_val
     return decrypted
 
 
