@@ -34,7 +34,8 @@ from ast import literal_eval
 from time import sleep
 from itertools import product
 import Project.code_base as cb
-
+import pathlib
+import ast
 __version__ = '1.0'
 __desc__ = "A simplified implementation of Conway's Game of Life."
 
@@ -47,27 +48,23 @@ RESOURCES = Path(__file__).parent / "../_Resources/"
 
 def load_seed_from_file(_file_name: str) -> tuple:
     """ Load population seed from file. Returns tuple: population (dict) and world_size (tuple). """
-    import pathlib
-    import ast
 
-
-    if ".json" not in _file_name:
-        _file_name = f"{_file_name}.json"
-
+    _file_name = f"{_file_name}.json" if ".json" not in _file_name else _file_name
     file_path = pathlib.Path(RESOURCES / _file_name)
     population = {}
+
     with open(file_path, 'r') as file:
-
         data = json.load(file)
-
         for element in data.values():
             if isinstance(element, dict):
                 for key, value in element.items():
                     population.setdefault(ast.literal_eval(key), value)
             if isinstance(element, list):
-                worlSize = tuple(element)
-    returnTuple = (dict(population), worlSize)
-    return tuple(returnTuple)
+                world_size = tuple(element)
+    #int1, int2 = world_size
+
+    return_value = population, (world_size[1], world_size[0])
+    return tuple(return_value)
 
 
 def create_logger() -> logging.Logger:
@@ -140,10 +137,7 @@ def populate_world(_world_size: tuple, _seed_pattern: str = None) -> dict:
             else:
                 population[cell] = {'state': cb.STATE_DEAD}
 
-
-
         neighbours = calc_neighbour_positions(cell)
-
         population[cell]['neighbours'] = neighbours
 
     return population
@@ -163,7 +157,6 @@ def calc_neighbour_positions(_cell_coord: tuple) -> list:
 def run_simulation(_nth_generation: int, _population: dict, _world_size: tuple):
     """ Runs simulation for specified amount of generations. """
 
-
     cb.clear_console()
 
     _population = update_world(_population, _world_size)
@@ -174,45 +167,36 @@ def run_simulation(_nth_generation: int, _population: dict, _world_size: tuple):
 
 
 
-
-
 def update_world(_cur_gen: dict, _world_size: tuple) -> dict:
     """ Represents a tick in the simulation. """
-    int1, int2 = _world_size
-    nextGen = {}
 
+    next_gen = {}
     for cell in _cur_gen:
         if _cur_gen[cell] is None:
-            _cur_gen[cell] = {}
-            _cur_gen[cell]['state'] = cb.STATE_RIM
+            _cur_gen[cell] = {'state': cb.STATE_RIM}
 
-        res = list(_cur_gen[cell].values())[0]
-        color = cb.get_print_value(res)
+        color = cb.get_print_value(list(_cur_gen[cell].values())[0])
 
-        if cell[1] == int2-1:
-            cb.progress(f"{color}\n")
-        else:
-            cb.progress(f"{color}")
+        cb.progress(f"{color}\n") if cell[1] == _world_size[1]-1 \
+            else cb.progress(f"{color}")
 
 
-    for cell in _cur_gen:
         if '#' not in _cur_gen[cell].values():
             neighbours = calc_neighbour_positions(cell)
             count = count_alive_neighbours(neighbours ,_cur_gen)
             if _cur_gen[cell]['state'] == 'X' and count == 2 or count == 3:
 
-                nextGen[cell] = {'state': 'X'}
+                next_gen[cell] = {'state': 'X'}
             elif _cur_gen[cell]['state'] == '-' and count == 3:
-                nextGen[cell] = {'state': 'X'}
+                next_gen[cell] = {'state': 'X'}
             else:
-                nextGen[cell] = {'state': '-'}
+                next_gen[cell] = {'state': '-'}
+
         if _cur_gen[cell]['state'] == '#':
-            nextGen[cell] = {}
-            nextGen[cell]['state'] = cb.STATE_RIM
+            next_gen[cell] = {}
+            next_gen[cell]['state'] = cb.STATE_RIM
 
-
-    return nextGen
-
+    return next_gen
 
 
 def count_alive_neighbours(_neighbours: list, _cells: dict) -> int:
@@ -220,7 +204,7 @@ def count_alive_neighbours(_neighbours: list, _cells: dict) -> int:
 
     count = 0
     for i in _neighbours:
-        if _cells[i]['state'] == 'X':
+        if _cells[i] is not None and _cells[i]['state'] == 'X':
             count +=1
     return count
 
@@ -235,7 +219,7 @@ def main():
                         help='Starting seed. If omitted, a randomized seed will be used.')
     parser.add_argument('-ws', '--worldsize', dest='worldsize', type=str, default='10x20',
                         help='Size of the world, in terms of width and height. Defaults to 80x40.')
-    parser.add_argument('-f', '--file', dest='file', type=str, default='seed_gliders.json',
+    parser.add_argument('-f', '--file', dest='file', type=str,
                         help='Load starting seed from file.')
 
     args = parser.parse_args()
