@@ -58,11 +58,12 @@ def load_seed_from_file(_file_name: str) -> tuple:
         for element in data.values():
             if isinstance(element, dict):
                 for key, value in element.items():
+                    # Add key as int and value to population
                     population.setdefault(ast.literal_eval(key), value)
             if isinstance(element, list):
+                # Get world size from json and save as tuple
                 world_size = tuple(element)
-    #int1, int2 = world_size
-
+    # Return tuple containing population and world size
     return_value = population, (world_size[1], world_size[0])
     return tuple(return_value)
 
@@ -84,17 +85,17 @@ def simulation_decorator(func):
 def parse_world_size_arg(_arg: str) -> tuple:
     """ Parse width and height from command argument. """
 
-    values = list(filter(None, _arg.split('x')))   # Split string and add items to list. Filter none
-
+    # Split string and add items to list. Filter none
+    values = list(filter(None, _arg.split('x')))
     try:
         values = [int(num) for num in values]   # Convert value in list to int
         if len(values) != 2:   # Check if list has two items
-            raise AssertionError("World size should contain width and height, seperated by 'x'. Ex: '80x40'")
-
+            raise AssertionError("World size should contain width and height, "
+                                 "seperated by 'x'. Ex: '80x40'")
         for num in values:
             if num <= 0:   # Check that list contain positive number above zero
-                raise ValueError("Both width and height needs to have positive values above zero.")
-
+                raise ValueError("Both width and height needs to have "
+                                 "positive values above zero.")
     except (ValueError, AssertionError) as myError:
             print(myError)   # Print error
             values = [80, 40]   # set default value
@@ -102,45 +103,40 @@ def parse_world_size_arg(_arg: str) -> tuple:
 
     return tuple(values)
 
+
 def populate_world(_world_size: tuple, _seed_pattern: str = None) -> dict:
     """ Populate the world with cells and initial states. """
 
-    int1, int2 = _world_size
-    height = list(range(0, int1))
-    width = list(range(0, int2))
+    height = list(range(0, _world_size[0]))
+    width = list(range(0, _world_size[1]))
+    # Get all coordinates on world
     coordinates = (tuple(product(height, width)))
-
-    pattern = cb.get_pattern(_seed_pattern, (int2, int1))
-
+    pattern = cb.get_pattern(_seed_pattern, (_world_size[1], _world_size[0]))
     population = {}
 
     for cell in coordinates:
-        if 0 in cell or cell[0] == int1-1 or cell[1] == int2-1:   # Get all values that's on the "edge"
+        # Get all rim-cells
+        if 0 in cell or cell[0] == _world_size[0]-1 or cell[1] == _world_size[1]-1:
             population[cell] = None
             continue
-
-        if _seed_pattern is not None:    # Fixa att den går igenom loopen innan den går till neighbour
-
+        # Check if pattern exist and determine cell state
+        if pattern is not None:
             if cell in pattern:
                 population[cell] = {'state': cb.STATE_ALIVE}
-
             else:
                 population[cell] = {'state': cb.STATE_DEAD}
-
-
+        # Randomize cell state
         else:
             random_number = random.randint(0, 20)
-            #population[cell] = {}
             if random_number > 16:
                 population[cell] = {'state': cb.STATE_ALIVE}
-                #population[cell]['state'] = cb.STATE_ALIVE
             else:
                 population[cell] = {'state': cb.STATE_DEAD}
-
-        neighbours = calc_neighbour_positions(cell)
-        population[cell]['neighbours'] = neighbours
+        neighbours = calc_neighbour_positions(cell)   # Get neighbours for cell
+        population[cell]['neighbours'] = neighbours   # Add neighbors in dict
 
     return population
+
 
 def calc_neighbour_positions(_cell_coord: tuple) -> list:
     """ Calculate neighbouring cell coordinates in all directions (cardinal + diagonal).
@@ -148,53 +144,47 @@ def calc_neighbour_positions(_cell_coord: tuple) -> list:
 
     coords = [(-1, -1), (0, -1), (1, -1), (-1, 0),
                (1, 0), (-1, 1), (0, 1), (1, 1)]
-
     x, y = _cell_coord
-
+    # Calculate neighbours in all directions
     neighbours = {(x + x_add, y + y_add) for x_add, y_add in coords}
     return list(neighbours)
+
 
 def run_simulation(_nth_generation: int, _population: dict, _world_size: tuple):
     """ Runs simulation for specified amount of generations. """
 
     cb.clear_console()
-
     _population = update_world(_population, _world_size)
     sleep(0.200)
-
-    True if _nth_generation <= 1 else run_simulation(_nth_generation - 1, _population, _world_size)
     #   Runs simulation if needed
-
+    True if _nth_generation <= 1 else run_simulation(_nth_generation - 1, _population, _world_size)
 
 
 def update_world(_cur_gen: dict, _world_size: tuple) -> dict:
     """ Represents a tick in the simulation. """
 
     next_gen = {}
-    for cell in _cur_gen:
+    for cell in _cur_gen:   # Value '#' for rim-cells
         if _cur_gen[cell] is None:
             _cur_gen[cell] = {'state': cb.STATE_RIM}
-
+            #   Get cell-state and color
         color = cb.get_print_value(list(_cur_gen[cell].values())[0])
-
+        #   Each row ends with line break
         cb.progress(f"{color}\n") if cell[1] == _world_size[1]-1 \
             else cb.progress(f"{color}")
 
-
+        # Control that it's not a rim-cell and update state
         if '#' not in _cur_gen[cell].values():
             neighbours = calc_neighbour_positions(cell)
             count = count_alive_neighbours(neighbours ,_cur_gen)
             if _cur_gen[cell]['state'] == 'X' and count == 2 or count == 3:
-
                 next_gen[cell] = {'state': 'X'}
             elif _cur_gen[cell]['state'] == '-' and count == 3:
                 next_gen[cell] = {'state': 'X'}
             else:
                 next_gen[cell] = {'state': '-'}
-
-        if _cur_gen[cell]['state'] == '#':
-            next_gen[cell] = {}
-            next_gen[cell]['state'] = cb.STATE_RIM
+        else:
+            next_gen[cell] = {'state': cb.STATE_RIM}
 
     return next_gen
 
@@ -203,6 +193,7 @@ def count_alive_neighbours(_neighbours: list, _cells: dict) -> int:
     """ Determine how many of the neighbouring cells are currently alive. """
 
     count = 0
+    #  Check if it's an ordinary cell and is alive
     for i in _neighbours:
         if _cells[i] is not None and _cells[i]['state'] == 'X':
             count +=1
@@ -215,11 +206,11 @@ def main():
     parser = argparse.ArgumentParser(description=__desc__, epilog=epilog, add_help=True)
     parser.add_argument('-g', '--generations', dest='generations', type=int, default=2,
                         help='Amount of generations the simulation should run. Defaults to 50.')
-    parser.add_argument('-s', '--seed', dest='seed', type=str,
+    parser.add_argument('-s', '--seed', dest='seed', type=str, default='gliders',
                         help='Starting seed. If omitted, a randomized seed will be used.')
     parser.add_argument('-ws', '--worldsize', dest='worldsize', type=str, default='10x20',
                         help='Size of the world, in terms of width and height. Defaults to 80x40.')
-    parser.add_argument('-f', '--file', dest='file', type=str,
+    parser.add_argument('-f', '--file', dest='file', type=str, default='seed_gliders',
                         help='Load starting seed from file.')
 
     args = parser.parse_args()
