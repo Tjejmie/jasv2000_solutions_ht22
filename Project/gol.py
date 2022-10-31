@@ -36,6 +36,7 @@ from itertools import product
 import Project.code_base as cb
 import pathlib
 import ast
+from functools import wraps
 __version__ = '1.0'
 __desc__ = "A simplified implementation of Conway's Game of Life."
 
@@ -70,12 +71,45 @@ def load_seed_from_file(_file_name: str) -> tuple:
 
 def create_logger() -> logging.Logger:
     """ Creates a logging object to be used for reports. """
-    pass
+    log_path = RESOURCES / 'gol.log'
+    logger = logging.getLogger('gol_logger')
+    logger.setLevel(logging.INFO)
+    file_handler = logging.FileHandler(log_path, mode='w')
+    file_handler.setLevel(logging.INFO)
+    logger.addHandler(file_handler)
+
+    return logger
 
 
 def simulation_decorator(func):
     """ Function decorator, used to run full extent of simulation. """
-    pass
+
+    @wraps(func)
+    def wrapper(_generation: int, _population: dict, _world_size: tuple):
+        logger = create_logger()
+
+        for i in range(_generation):
+            count_alive, count_dead, count_rim = 0,0,0
+
+            cb.clear_console()
+            for key, value in _population.items():
+                if value is not None and value['state'] != '#':
+                    if value['state'] == 'X':
+                        count_alive +=1
+                    if value['state'] == '-':
+                        count_dead +=1
+                else:
+                    count_rim +=1
+
+            logger.info(f"GENERATION {i}")
+            logger.info(f"  Population: {len(_population) - count_rim}")
+            logger.info(f"  Alive: {count_alive}")
+            logger.info(f"  Dead: {count_dead}")
+
+            _population = func(_generation, _population, _world_size)
+            sleep(0.200)
+
+    return wrapper
 
 
 # -----------------------------------------
@@ -149,23 +183,19 @@ def calc_neighbour_positions(_cell_coord: tuple) -> list:
     neighbours = {(x + x_add, y + y_add) for x_add, y_add in coords}
     return list(neighbours)
 
-
-def run_simulation(_nth_generation: int, _population: dict, _world_size: tuple):
+@simulation_decorator
+def run_simulation(_generation: int, _population: dict, _world_size: tuple):
     """ Runs simulation for specified amount of generations. """
-
-    cb.clear_console()
     _population = update_world(_population, _world_size)
-    sleep(0.200)
-    #   Runs simulation if needed
-    True if _nth_generation <= 1 else run_simulation(_nth_generation - 1, _population, _world_size)
+    return _population
 
 
 def update_world(_cur_gen: dict, _world_size: tuple) -> dict:
     """ Represents a tick in the simulation. """
 
     next_gen = {}
-    for cell in _cur_gen:   # Value '#' for rim-cells
-        if _cur_gen[cell] is None:
+    for cell in _cur_gen:
+        if _cur_gen[cell] is None: # Value '#' for rim-cells
             _cur_gen[cell] = {'state': cb.STATE_RIM}
             #   Get cell-state and color
         color = cb.get_print_value(list(_cur_gen[cell].values())[0])
@@ -206,11 +236,11 @@ def main():
     parser = argparse.ArgumentParser(description=__desc__, epilog=epilog, add_help=True)
     parser.add_argument('-g', '--generations', dest='generations', type=int, default=2,
                         help='Amount of generations the simulation should run. Defaults to 50.')
-    parser.add_argument('-s', '--seed', dest='seed', type=str, default='gliders',
+    parser.add_argument('-s', '--seed', dest='seed', type=str,
                         help='Starting seed. If omitted, a randomized seed will be used.')
     parser.add_argument('-ws', '--worldsize', dest='worldsize', type=str, default='10x20',
                         help='Size of the world, in terms of width and height. Defaults to 80x40.')
-    parser.add_argument('-f', '--file', dest='file', type=str, default='seed_gliders',
+    parser.add_argument('-f', '--file', dest='file', type=str,
                         help='Load starting seed from file.')
 
     args = parser.parse_args()
