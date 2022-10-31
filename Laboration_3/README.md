@@ -14,11 +14,11 @@ med varandra. En iterativ och rekursiv lösning var fördefinierad och en tredje
 implementeras, baserat på den rekursiva lösningen men där resultatet lagras i en dictionary för
 att påskynda beräkningarna. Lösningen behöver uppfylla krav som anges i laborationsbeskrivningen
 och är beroende av att uppnå följande mål:
-- Den tredje lösningen skall vara en rekursiv lösning och som behåller minnet av beräknade sekvenser
-- Dessa tre Fibonacci-funktioner skall utökas med en enda decorator som ska beräkna körtiden samt 
+* Den tredje lösningen skall vara en rekursiv lösning och som behåller minnet av beräknade sekvenser
+* Dessa tre Fibonacci-funktioner skall utökas med en enda decorator som ska beräkna körtiden samt 
 kommunicera med en anpassad logger
-- Statistikinformation ska köra mätningar och skriva ut dessa i terminalen.
-- Motsvarande filer för Fibonacci-funktionerna ska skapas som innehåller beräknande värden
+* Statistikinformation ska köra mätningar och skriva ut dessa i terminalen.
+* Motsvarande filer för Fibonacci-funktionerna ska skapas som innehåller beräknande värden
 
 ## Genomförande
 
@@ -102,23 +102,23 @@ skriva ut värdena till textfilen `for data in result: f.write("%s: %s \n" % dat
 ## Diskussion
 
 Den implementerade lösningen kan anses vara korrekt och uppfylla laborationens syfte av flera orsaker:
-- Den egenimplementerade Fibonacci-metoden var en rekursiv lösning, vilket innebär att funktionen
+* Den egenimplementerade Fibonacci-metoden var en rekursiv lösning, vilket innebär att funktionen
 anropar sig själv. Funktionen kontrollerade först om det önskade data redan fanns sparat i 
 dictionaryn, ifall det inte gjorde det så beräknades värdet och sparades. Detta kunde man följa genom
 att använda sig av breakpoint i funktionen och då se hur den kontrollerar värdet och registrerar
 det i dictionaryn.
 
-- Alla Fibonacci-funktioner blev kopplade till en decorator som beräknade körtiden. Detta kunde
+* Alla Fibonacci-funktioner blev kopplade till en decorator som beräknade körtiden. Detta kunde
 kontrolleras tidigt genom att använda breakpoint. Senare när funktionen som skrev ut tiden var klar
 kunde det bekräfta att tidsutskriften stämde. Den anpassade loggern blev skapad och var 5e körning
 skrevs information ut i den. För att kontrollera att loggern stämde var det enbart att kontrollera
 den tillsammans med de siffror för Fibonacci som fanns i laborationsbeskrivningen.
 
-- Körtiden blev beräknad och utskriven i terminalen, både i sekunder, millisekunder, mikrosekunder
+* Körtiden blev beräknad och utskriven i terminalen, både i sekunder, millisekunder, mikrosekunder
 och nanosekunder. Utskriften i terminalen stämde överens med vad laborationsbeskrivningen gav som
 exempel på hur tidsutskriften kunde se ut.
 
-- Motsvarande Fibonacci-filer skulle skapas för de funktionerna som fanns, där det beräknade innehållet
+* Motsvarande Fibonacci-filer skulle skapas för de funktionerna som fanns, där det beräknade innehållet
 skulle finnas. Som med tidigare logger var det enkelt att jämföra siffrorna i loggern tillsammans med
 de Fibonacci-siffror som fanns i laborationsbeskrivningen för att kontrollera att de var korrekta.
 
