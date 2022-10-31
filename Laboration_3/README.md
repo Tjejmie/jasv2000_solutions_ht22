@@ -9,11 +9,16 @@ hämta och ladda upp filer, där Bitbucket är den versionshanteringsprogram som
 
 ## Syfte
 
-Syftet med laboration 3 var att få en ökad kunskap med användning av iterativa och rekursiva
-implementeringar, funktionsdeklarationer, skapa välstrukturerad kod samt att skapa och använda
-textfiler och loggar. Detta gjordes genom att lösa uppgiften som laborationen bestod av.
-
-
+Syftet med laboration 3 var att konstruera en lösning för att jämföra olika Fibonacci-sekvenser
+med varandra. En iterativ och rekursiv lösning var fördefinierad och en tredje lösning ska
+implementeras, baserat på den rekursiva lösningen men där resultatet lagras i en dictionary för
+att påskynda beräkningarna. Lösningen behöver uppfylla krav som anges i laborationsbeskrivningen
+och är beroende av att uppnå följande mål:
+- Den tredje lösningen skall vara en rekursiv lösning och som behåller minnet av beräknade sekvenser
+- Dessa tre Fibonacci-funktioner skall utökas med en enda decorator som ska beräkna körtiden samt 
+kommunicera med en anpassad logger
+- Statistikinformation ska köra mätningar och skriva ut dessa i terminalen.
+- Motsvarande filer för Fibonacci-funktionerna ska skapas som innehåller beräknande värden
 
 ## Genomförande
 
@@ -96,14 +101,32 @@ skriva ut värdena till textfilen `for data in result: f.write("%s: %s \n" % dat
 
 ## Diskussion
 
-Syftet med laboration 3 var att få en ökad kunskap med användning av iterativa och rekursiva
-implementeringar, funktionsdeklarationer, skapa välstrukturerad kod samt att skapa och använda
-textfiler och loggar. Uppgiften kan i sin helhet anses vara korrekt och därmed även syftet uppfyllt. Uppgiftens
-utskrifter till terminalen och loggarna/textfilerna visar samma resultat som uppgiftsbeskrivningen krävde och
-lösningen följde de krav som var satta. Lösningen kan anses vara tillförlitlig då den både följer
-uppgiften samt Pythons kodstruktur men koden kan självklart förbättras. En svaghet jag anser finns med lösningen
-idag är dictionaryn i fibonacci_memory som skapas på nytt varje gång funktionen anropas. Detta gör att data från 
-tidigare körning inte sparas i dictionaryn för framtida körningar.
+Den implementerade lösningen kan anses vara korrekt och uppfylla laborationens syfte av flera orsaker:
+- Den egenimplementerade Fibonacci-metoden var en rekursiv lösning, vilket innebär att funktionen
+anropar sig själv. Funktionen kontrollerade först om det önskade data redan fanns sparat i 
+dictionaryn, ifall det inte gjorde det så beräknades värdet och sparades. Detta kunde man följa genom
+att använda sig av breakpoint i funktionen och då se hur den kontrollerar värdet och registrerar
+det i dictionaryn.
+
+- Alla Fibonacci-funktioner blev kopplade till en decorator som beräknade körtiden. Detta kunde
+kontrolleras tidigt genom att använda breakpoint. Senare när funktionen som skrev ut tiden var klar
+kunde det bekräfta att tidsutskriften stämde. Den anpassade loggern blev skapad och var 5e körning
+skrevs information ut i den. För att kontrollera att loggern stämde var det enbart att kontrollera
+den tillsammans med de siffror för Fibonacci som fanns i laborationsbeskrivningen.
+
+- Körtiden blev beräknad och utskriven i terminalen, både i sekunder, millisekunder, mikrosekunder
+och nanosekunder. Utskriften i terminalen stämde överens med vad laborationsbeskrivningen gav som
+exempel på hur tidsutskriften kunde se ut.
+
+- Motsvarande Fibonacci-filer skulle skapas för de funktionerna som fanns, där det beräknade innehållet
+skulle finnas. Som med tidigare logger var det enkelt att jämföra siffrorna i loggern tillsammans med
+de Fibonacci-siffror som fanns i laborationsbeskrivningen för att kontrollera att de var korrekta.
+
+Metodiken i denna laboration fungerade men det finns rum för förbättring, bland annat
+då dictionaryn i fibonacci_memory skapas på nytt varje gång funktionen anropas. Detta gör att tidigare
+körning inte sparas i dictionaryn för framtida körningar. En lösning på detta hade exempelvis varit
+att skapa dictionaryn globalt så den kan hämta minnet från den andra rekursiva Fibonacci-metoden
+eller att spara tidigare körningar.
 
 Denna laboration har gett en förståelse över hur logging fungerar, både hur dessa skapas och hur man fyller den med 
 data. Även hur bra och smidigt det är att använda sig av decorators, något som tog mig ett tag att greppa. Den

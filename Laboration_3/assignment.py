@@ -22,7 +22,7 @@ import timeit
 import itertools
 
 __version__ = '1.1'
-__desc__ = "Program used for measuríng execution time of various Fibonacci implementations!"
+__desc__ = "Program used for measur?ng execution time of various Fibonacci implementations!"
 
 RESOURCES = Path(__file__).parent / "../_Resources/"
 
@@ -30,12 +30,9 @@ RESOURCES = Path(__file__).parent / "../_Resources/"
 def create_logger() -> logging.Logger:
     """Create and return logger object."""
 
-    file_path = RESOURCES / 'ass3_log_conf.json'   # Create full filepath
-    with open(file_path, 'r') as file:   # Open file
-        logger = json.load(file)   # Create logger for jsonfile
-        logging.config.dictConfig(logger)   # Load logger configs from JSON
-    logger = logging.getLogger('ass_3_logger')   # Creating object of the logging
-    return logger
+    with open(RESOURCES / 'ass3_log_conf.json') as file:  # Open file
+        logging.config.dictConfig(json.load(file))  # Load logger configs from JSON
+    return logging.getLogger('ass_3_logger')
 
 
 def measurements_decorator(func):
@@ -44,12 +41,12 @@ def measurements_decorator(func):
     def wrapper(nth_nmb: int) -> tuple:
 
         value = []
-        LOGGER.info('Starting measurements...')
+        LOGGER.info("Starting measurements...{}".format(func.__name__))
         start = timeit.default_timer()   # Start timer
-        for i in reversed(range(nth_nmb +1)):  # +1 so it start at nth_nmb and not nth_nmb -1
+        for j, i in enumerate (reversed(range(nth_nmb +1))):  # +1 so it start at nth_nmb and not nth_nmb -1
             result = func(i)   # Get fibonacci value from methods
             value.append(result)   # Add fibonacci values to container
-            if i % 5 == 0:   # for each 5th iteration log information
+            if j % 5 == 0:   # for each 5th iteration log information
                 LOGGER.debug('%s: %s', i, result)
 
         duration = timeit.default_timer() - start   # Get duration
@@ -88,7 +85,6 @@ def fibonacci_memory(nth_nmb: int) -> int:
     def fib(_n):
         if _n not in memory:   # Check if value doesn't exist in dict
             memory[_n] = fib(_n - 1) + fib(_n - 2)  # If value doesn't exist its calculated
-            return memory[_n]
         return memory[_n]   # Return value in dict
     return fib(nth_nmb)
 
@@ -115,26 +111,28 @@ def print_statistics(fib_details: dict, nth_value: int):
     line = '\n' + ("---------------" * 5)
 
     print(line)
-    print(f"DURATION FOR EACH APPROACH WITHIN INTERVAL: {nth_value}-0".center(75)+f"{line}")   # Print line and header
+    print(f"DURATION FOR EACH APPROACH WITHIN INTERVAL: {nth_value}-0".center(75)+f"{line}")
     values = ['Seconds', 'Milliseconds', 'Microseconds', 'Nanoseconds']
-    print(f"{values[0].rjust(27)}{values[1].rjust(16)}{values[2].rjust(16)}{values[3].rjust(16)}")   # Print column headers
+    print(f"{values[0].rjust(27)}{values[1].rjust(16)}{values[2].rjust(16)}{values[3].rjust(16)}")
     for key, val in fib_details.items():   # Get data from fib_details and declare it as key and val
         duration = (val[0])   # Get duration
         sec = duration_format(duration, values[0])   # Get seconds from duration_format
         millisec = duration_format(duration, values[1])   # Get milliseconds from duration_format
         microsec = duration_format(duration, values[2])   # Get microseconds from duration_format
         nanosec = duration_format(duration, values[3])   # Get nanoseconds from duration_format
-        print(f"{key.title().ljust(20)}{sec.rjust(0)}{millisec.rjust(16)}{microsec.rjust(16)}{nanosec.rjust(16)}")
+        print(f"{key.title().ljust(20)}{sec.rjust(0)}{millisec.rjust(16)}"
+              f"{microsec.rjust(16)}{nanosec.rjust(16)}")
 
 
 def write_to_file(fib_details: dict):
     """Function to write information to file."""
-
-    for key, val in fib_details.items():   # Get data from fib_details and declare it as key and val
-        file_path = RESOURCES / (key.replace(' ', '_') + '.txt')   # Modify name for textfiles
+    # Get data from fib_details and declare it as key and val
+    for key, val in fib_details.items():
+        file_path = RESOURCES / (key.replace(' ', '_') + '.txt')
         f = open(f"{file_path}", "w+")   # Create new textfiles
         new_value = val[1]  # Get values from fib_details and reverse list
-        seq_and_value = tuple(zip(itertools.count(30, -1), new_value))   # Add sequence to tuple of values
+        # Add sequence to tuple of values
+        seq_and_value = tuple(zip(itertools.count(len(new_value)-1, -1), new_value))
         for data in seq_and_value:   # Get each item in tuple
             f.write("%s: %s \n" % data)   # Write item in file
 
@@ -144,7 +142,7 @@ def main():
 
     epilog = "DT179G Assignment 3 v" + __version__
     parser = argparse.ArgumentParser(description=__desc__, epilog=epilog, add_help=True)
-    parser.add_argument('nth', metavar='nth', type=int, nargs='?', default=30,
+    parser.add_argument('nth', metavar='nth', type=int, nargs='?', default=27,
                         help="nth Fibonacci sequence to find.")
 
     global LOGGER  # ignore warnings raised from linters, such as PyLint!
