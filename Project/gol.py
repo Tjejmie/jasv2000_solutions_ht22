@@ -186,8 +186,7 @@ def calc_neighbour_positions(_cell_coord: tuple) -> list:
 @simulation_decorator
 def run_simulation(_generation: int, _population: dict, _world_size: tuple):
     """ Runs simulation for specified amount of generations. """
-    _population = update_world(_population, _world_size)
-    return _population
+    return update_world(_population, _world_size)
 
 
 def update_world(_cur_gen: dict, _world_size: tuple) -> dict:
