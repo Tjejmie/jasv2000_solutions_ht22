@@ -15,32 +15,46 @@ projekt implementerades kraven för att uppnå betyget B, alla dessa krav kommer
 nedanför och det är specificerat vilka krav som gäller för vilket betyg:
 
 Grundkrav (Betyg E):
+
 * Game of Life skall följa och tillämpa Conways regler:
+
   * Varje levande cell med färre än två levande grannar dör, som av underbefolkning
+  
   * Varje levande cell med två eller tre levande grannar lever vidare till nästa generation
+  
   * Varje levande cell med fler än tre levande grannar dör, som av överbefolkning
+  
   * Alla döda celler med exakt tre levande grannar blir en levande cell, som om det vore fortplantning.
+  
 * Världsstorleken ska bestämmas av funktionen `parse_world_size_args()`
 och cellbefolkning efter funktionen `populate_world()`.
+
 * Simuleringen skall startas genom att anropa `run_simulation()`
+
 * En validering för världsstorlek skall skapas i funktionen `parse_world_size_args()` och om den 
 misslyckas skall standardvärdet 80x40 returneras
+
 * Cellernas status kan bestämmas genom två sätt: om `_seed_pattern` i funktionen `populate_world()`
 är annat än None ska de levande
 cellerna bestämmas av `get_pattern()`, annars genom randomisering inom intervallet 0-20.
 Ifall randomiseringen är större än 16 skall cellen vara vid liv, annars död
 
 Krav betyg D:
+
 * `run_simulation()` skall ha en rekursiv lösning
 
 Krav betyg C:
+
 * Om användaren anger ett filnamn ska både cellpopulationen och världsstorleken att returneras från
 funktionen `load_seed_from_file()`. Detta genom att ladda data från lagrade JSON-filer som finns
 tillsammans med projektbeskrivningen.
 
 Krav betyg B:
+
 * run_simulation skall enbart returnera befolkningstillståndet av `update_world()`
+
 * En anpassad logger ska skapas av funktionen `create_logger()` som returnerar denna till `simulation_decorator()`.
+
 * Simulationskörningen skall hanteras av `simulation_decorator()` som också loggar statusrapporter.
 
 
@@ -188,6 +202,7 @@ Den inre funktionen returnerar sig själv.
 Den implementerade lösningen kan anses vara korrekt och uppfylla laborationens syfte av flera 
 orsaker:
 Grundkrav (Betyg E):
+
 * Spelet följer och har implementerat Conways regler. Detta kunde kontinuerligt testas
 genom att använda breakpoints i funktionen `calc_neighbour_positions` där grannarna till cellerna
 blev deklarerade samt i funktionen `update_world` där Conways regler testades. Med breakpoint
@@ -195,6 +210,7 @@ kunde koden stegas igenom och därför kunde man följa steg för steg för att 
 koden stämde överens med de kraven som fanns. Vid implementering av mönster gick det också tydligt
 att se att koden stämde överens med de förväntade beteendena som mönstret skulle ha, exempel på
 mönsters beteende låg ute i Moodle.
+
 * Ett annat krav på programmet var att världsstorleken skulle bestämmas av `parse_world_size_args()`
 och cellbefolkningen av `populate_world()`. Detta kunde som med kravet ovan bekräftas genom
 att använda breakpoints under utvecklandets gång. `parse_world_size_args()` testades flera gånger
@@ -202,14 +218,17 @@ genom att skriva ut både korrekt och felaktig data i terminalen. Det gick att s
 80x40 skulle användas vid inmatning av felaktig data då terminalen först skrev ut den varningen samt
 genom att räkna storleken som blev på spelet i terminalen. `populate_world()` kontrollerades flera
 gånger genom att hämta olika mönster samt användning av randomisering.
+
 * Simuleringen skall startas genom att anropa `run_simulation()`. Detta kunde tydligt ses genom
 användning av breakpoint samt genom att analysera koden i funktionen `main()`.
+
 * Ett krav var att validering för världsstorlek skall skapas i funktionen `parse_world_size_args()`
 och sättas till 80x40 om den misslyckades. Som tidigare nämnt testades denna funktion flera gånger
 genom olika anrop till terminalen. Alla möjliga tester provades för att försäkra sig om att
 lösningen inte hade några brister, som att exempelvis använda bokstäver istället för siffror
 eller att skicka in ett tal tillsammans med 'x' och inget efter det. Alla tester till terminalen
 gjorde att vissa brister fanns med koden vilket åtgärdades under utvecklingens gång.
+
 * Sista grundkravet var att cellernas status kunde beräknas antingen genom att 
 `_seed_pattern` returnerar något annat än None och därav hämtar ett mönster eller genom randomisering.
 Detta testades flera gånger genom att både skriva olika uppgifter i terminalen samt genom användning
@@ -219,6 +238,7 @@ stegades igenom flera gånger för att se att ett nummer randomiserades mellan 0
 fick sitt tillstånd baserat på vad siffran blev.
 
 Krav betyg D:
+
 * Kravet för betyg D var att `run_simulation()` skulle ha rekursiv lösning. Det innebär att funktionen
 anropar sig själv. Huruvida ett rekursivt anrop ska göras bestäms av värdet för _nth_generation,
 därför körs funktionen bara om det är nödvändigt. Detta kunde man kontrollera genom att använda
@@ -227,6 +247,7 @@ breakpoint i funktionen för att se om den kördes så många gånger som den bl
 som förväntat.
 
 Krav betyg C:
+
 * Kravet för betyg C var att om användaren uppger ett existerande filnamn ska cellpopulationen och 
 världsstorleken
 returneras från `load_seed_from_file()` och inte `parse_world_size_arg` och `populate_world` som
@@ -239,10 +260,12 @@ data kunde man se genom att köra programmet och kontrollera att mönstren över
 exempelmönster som fanns i Moodle.
 
 Krav betyg B:
+
 * Ett krav för betyg B var att funktionen `run_simulation` enbart skulle returnera
 befolkningstillståndet av `update_world()`. Detta kunde man utläsa efter att analysera
 koden i `run_simulation` men det testades även med breakpoint för att försäkra sig om att det
 stämde.
+
 * Ett annat krav var att en logger skulle skapas av funktionen `create_logger()` som skulle
 logga statusrapporter från funktionen `simulation_decorator()`. Detta kunde testas
 genom att logger hämtades i `simulation_decorator` och sen skriva ut data i den. Det kunde tidigt
