@@ -233,11 +233,11 @@ def main():
     """ The main program execution. YOU MAY NOT MODIFY ANYTHING IN THIS FUNCTION!! """
     epilog = "DT179G Project v" + __version__
     parser = argparse.ArgumentParser(description=__desc__, epilog=epilog, add_help=True)
-    parser.add_argument('-g', '--generations', dest='generations', type=int, default=2,
+    parser.add_argument('-g', '--generations', dest='generations', type=int, default=50,
                         help='Amount of generations the simulation should run. Defaults to 50.')
     parser.add_argument('-s', '--seed', dest='seed', type=str,
                         help='Starting seed. If omitted, a randomized seed will be used.')
-    parser.add_argument('-ws', '--worldsize', dest='worldsize', type=str, default='10x20',
+    parser.add_argument('-ws', '--worldsize', dest='worldsize', type=str, default='80x40',
                         help='Size of the world, in terms of width and height. Defaults to 80x40.')
     parser.add_argument('-f', '--file', dest='file', type=str,
                         help='Load starting seed from file.')

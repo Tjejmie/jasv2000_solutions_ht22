@@ -14,10 +14,14 @@ med varandra. En iterativ och rekursiv lösning var fördefinierad och en tredje
 implementeras, baserat på den rekursiva lösningen men där resultatet lagras i en dictionary för
 att påskynda beräkningarna. Lösningen behöver uppfylla krav som anges i laborationsbeskrivningen
 och är beroende av att uppnå följande mål:
+
 * Den tredje lösningen skall vara en rekursiv lösning och som behåller minnet av beräknade sekvenser
+
 * Dessa tre Fibonacci-funktioner skall utökas med en enda decorator som ska beräkna körtiden samt 
 kommunicera med en anpassad logger
+
 * Statistikinformation ska köra mätningar och skriva ut dessa i terminalen.
+
 * Motsvarande filer för Fibonacci-funktionerna ska skapas som innehåller beräknande värden
 
 ## Genomförande
@@ -49,7 +53,7 @@ manuellt eller genom att använda den befintliga konfigurationsfilen, det sistn�
 konfigurationsfilen redan innehöll den data som var nödvändig. Först deklarerades den korrekta filvägen till 
 konfigurationsfilen genom `file_path = RESOURCES / 'ass3_log_conf.json'` där RESOURCES var en fördeklarerad
 variabel till mappen _Resources. Konfigurationsfilen kunde då öppnas genom `with open(file_path, 'r') as file:`
-och det var då möjligt att skapa en logger för jsonfilen och hämta konfigurationen från den filen. Ett objekt
+och det var då möjligt att skapa en logger för json-filen och hämta konfigurationen från den filen. Ett objekt
 skapades genom `logger = logging.getLogger('ass_3_logger')` vilket även var det funktionen returnerade.
 
 Varje Fibonacci-funktion är dekorerad med `measurements_decorator`, vilket är den metod som ansvarar för att mäta
@@ -60,7 +64,7 @@ Fibonacci. För att mäta exekveringstiden för varje Fibonacci-funktion så skr
 vilket startar en timer för programmet. `for i in reversed(range(nth_nmb +1)):` gjorde att varje värde av
 ingångsvärdet gicks igenom där iterationen gick i omvänd ordning för att starta med det högsta talet.
 `result = func(i)` hämtade Fibonacci värdet från metoden för det ingångsvärde som var aktuellt. Detta Fibonacci
-värde lades till i en lista och för var 5e iteration presenterades data i loggern, detta kontrollerades genom att
+värde lades till i en lista och för var 5:e iteration presenterades data i logger, detta kontrollerades genom att
 se om talet var delbart med 5: `if i % 5 == 0: 
 LOGGER.debug('%s: %s', i, result)` Efter att alla Fibonacci-värden var hämtade räknades exekveringstiden ut genom
 `duration = timeit.default_timer() - start` där duration innehåller den aktuella tiden minus starttiden. Denna
@@ -102,6 +106,7 @@ skriva ut värdena till textfilen `for data in result: f.write("%s: %s \n" % dat
 ## Diskussion
 
 Den implementerade lösningen kan anses vara korrekt och uppfylla laborationens syfte av flera orsaker:
+
 * Den egenimplementerade Fibonacci-metoden var en rekursiv lösning, vilket innebär att funktionen
 anropar sig själv. Funktionen kontrollerade först om det önskade data redan fanns sparat i 
 dictionaryn, ifall det inte gjorde det så beräknades värdet och sparades. Detta kunde man följa genom
@@ -110,8 +115,8 @@ det i dictionaryn.
 
 * Alla Fibonacci-funktioner blev kopplade till en decorator som beräknade körtiden. Detta kunde
 kontrolleras tidigt genom att använda breakpoint. Senare när funktionen som skrev ut tiden var klar
-kunde det bekräfta att tidsutskriften stämde. Den anpassade loggern blev skapad och var 5e körning
-skrevs information ut i den. För att kontrollera att loggern stämde var det enbart att kontrollera
+kunde det bekräfta att tidsutskriften stämde. Den anpassade logger blev skapad och var 5:e körning
+skrevs information ut i den. För att kontrollera att logger stämde var det enbart att kontrollera
 den tillsammans med de siffror för Fibonacci som fanns i laborationsbeskrivningen.
 
 * Körtiden blev beräknad och utskriven i terminalen, både i sekunder, millisekunder, mikrosekunder
@@ -119,7 +124,7 @@ och nanosekunder. Utskriften i terminalen stämde överens med vad laborationsbe
 exempel på hur tidsutskriften kunde se ut.
 
 * Motsvarande Fibonacci-filer skulle skapas för de funktionerna som fanns, där det beräknade innehållet
-skulle finnas. Som med tidigare logger var det enkelt att jämföra siffrorna i loggern tillsammans med
+skulle finnas. Som med tidigare logger var det enkelt att jämföra siffrorna i logger tillsammans med
 de Fibonacci-siffror som fanns i laborationsbeskrivningen för att kontrollera att de var korrekta.
 
 Metodiken i denna laboration fungerade men det finns rum för förbättring, bland annat
